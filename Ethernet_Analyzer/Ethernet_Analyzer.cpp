@@ -175,6 +175,17 @@ int main(int argc, char* argv[]) {
         }
         size_t dataLen = crcOffset - dataStart;
 
+        // 新增：对数据字段长度进行检查
+        const size_t ETH_MIN_PAYLOAD = 46; //以太网最小有效载荷
+        const size_t ETH_MAX_PAYLOAD = 1500; //以太网最大有效载荷(不考虑Jumbo帧)
+        bool length_ok = true;
+        if (dataLen < ETH_MIN_PAYLOAD) {
+            length_ok = false;
+        }
+        if (dataLen > ETH_MAX_PAYLOAD) {
+            length_ok = false;
+        }
+
         // 4. 读取文件中的FCS并计算CRC
         if (crcOffset + 1 > total) {
             break;
@@ -205,6 +216,15 @@ int main(int argc, char* argv[]) {
         ss << "0x" << hex << uppercase << setw(4) << setfill('0') << et << dec;
         cout << "类型字段:   " << ss.str() << endl;
 
+        cout << "数据字段长度: " << dec << dataLen << " 字节" << endl;
+        if (!length_ok) {
+            if (dataLen < ETH_MIN_PAYLOAD) {
+                cout << "长度异常: 数据字段长度过短（小于 " << ETH_MIN_PAYLOAD << " 字节），可能为截断帧或错误帧。" << endl;
+            } else {
+                cout << "长度异常: 数据字段长度过长（大于 " << ETH_MAX_PAYLOAD << " 字节），可能包含额外数据或错误。" << endl;
+            }
+        }
+
         cout << "数据字段(ASCII): " << formatDataAscii(&data[dataStart], dataLen) << endl;
 
         // 保存当前cout状态，以便在打印十六进制后恢复
@@ -214,7 +234,8 @@ int main(int argc, char* argv[]) {
         cout << "CRC校验(计算): 0x" << hex << uppercase << setw(2) << setfill('0') << (int)calc << endl;
         cout.copyfmt(oldState); // 恢复cout状态
 
-        cout << "状态:       " << ((fcs == calc) ? "Accept" : "Reject") << endl;
+        // 状态：当且仅当CRC匹配且长度正常时接收
+        cout << "状态:       " << ((fcs == calc && length_ok) ? "Accept" : "Reject") << endl;
         cout << "------------------------------------------" << endl << endl;
 
         // 从下一个前导码的位置继续搜索
