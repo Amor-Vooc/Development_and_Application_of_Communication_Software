@@ -1,0 +1,72 @@
+---
+config:
+  theme: neo
+---
+graph TD
+    Start([开始]) --> CheckArgs{参数数量是否正确?}
+    CheckArgs -- 否 --> PrintUsage[/输出用法说明/]
+    PrintUsage --> End([结束])
+    
+    CheckArgs -- 是 --> InitWSA[初始化 Winsock]
+    InitWSA --> CheckWSA{初始化成功?}
+    CheckWSA -- 否 --> PrintWSAErr[/输出 WSAStartup 失败/]
+    PrintWSAErr --> End
+    CheckWSA -- 是 --> ParseAddr[获取目标地址]
+    ParseAddr --> IsIP{是 IP 字符串?}
+    IsIP -- 是 --> ConvIP[转换为 ULONG IP]
+    IsIP -- 否 --> DNSResolve[gethostbyname 域名解析]
+    
+    DNSResolve --> CheckDNS{解析成功?}
+    CheckDNS -- 否 --> PrintDNSErr[/输出解析失败/]
+    PrintDNSErr --> CleanAndExit[清理资源并退出]
+    CheckDNS -- 是 --> GetIPFromHost[获取解析后的 IP]
+    
+    ConvIP --> CreateSock[创建原始套接字 SOCK_RAW]
+    GetIPFromHost --> CreateSock
+    CreateSock --> CheckSock{创建成功?}
+    CheckSock -- 否 --> PrintSockErr[/输出失败<br>提示管理员权限/]
+    PrintSockErr --> CleanAndExit
+    CheckSock -- 是 --> SetRecvTimeout[设置接收超时 SO_RCVTIMEO]
+    SetRecvTimeout --> PrintHeader[/输出开始跟踪信息/]
+    PrintHeader --> InitLoop[初始化 TTL=1, 序列号=0]
+    InitLoop --> CheckLoop{TTL <= 30?}
+    CheckLoop -- 否 --> EndLoop[/输出跟踪完成/]
+    CheckLoop -- 是 --> SetSockTTL[setsockopt 设置当前 TTL]
+    SetSockTTL --> BuildICMP[构造 ICMP ECHO_REQUEST<br>计算校验和]
+    BuildICMP --> SendICMP[sendto 发送数据包]
+    SendICMP --> CheckSend{发送成功?}
+    
+    CheckSend -- 否 --> PrintSendFail[/输出目标不可达/]
+    PrintSendFail --> NextLoop[TTL + 1]
+    
+    CheckSend -- 是 --> WaitResp[select 等待响应<br>超时 3秒]
+    WaitResp --> CheckSelect{有数据可读?}
+    CheckSelect -- 否/超时 --> PrintTimeout[/输出请求超时 * /]
+    PrintTimeout --> NextLoop
+    
+    CheckSelect -- 是 --> RecvData[recvfrom 接收数据]
+    RecvData --> CalcRTT[计算 RTT]
+    CalcRTT --> ParsePacket[解析 IP 头和 ICMP 头]
+    
+    ParsePacket --> CheckType{ICMP 类型?}
+    CheckType -- Type 11 TTL超时 --> PrintRouter[/输出跳数, RTT, 路由器IP/]
+    PrintRouter --> NextLoop
+    
+    CheckType -- Type 0 回显应答 --> CheckID{ID 匹配当前进程?}
+    CheckID -- 否 --> PrintMismatch[/输出 ID 不匹配/]
+    PrintMismatch --> NextLoop
+    
+    CheckID -- 是 --> PrintDest[/输出到达目标 IP/]
+    PrintDest --> SetDone[标记 reachedDest = true]
+    SetDone --> BreakLoop
+    
+    CheckType -- 其他类型 --> PrintOther[/输出类型信息/]
+    PrintOther --> NextLoop
+    NextLoop --> CheckDest{已到达目标?}
+    CheckDest -- 是 --> BreakLoop
+    CheckDest -- 否 --> CheckLoop
+    BreakLoop --> EndLoop
+    EndLoop --> CloseRes[关闭 Socket, 清理 Winsock]
+    CloseRes --> WaitInput[/等待按键/]
+    CleanAndExit --> WaitInput
+    WaitInput --> End

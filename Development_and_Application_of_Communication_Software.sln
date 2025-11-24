@@ -1,17 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36408.4
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11217.181 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Development_and_Application_of_Communication_Software", "Development_and_Application_of_Communication_Software.vcxproj", "{0505894D-0142-4670-963D-8E03A2E1BB18}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ethernet_ARP", "Ethernet_ARP\Ethernet_ARP.vcxproj", "{B00C4216-0E7A-4BC4-8C9D-DD67E2AE1097}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ethernet_Analyzer", "Ethernet_Analyzer\Ethernet_Analyzer.vcxproj", "{B64A1C75-C493-4AC0-8337-1B973FC8BC9C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "task_1_Ethernet_Analyzer", "Ethernet_Analyzer\Ethernet_Analyzer.vcxproj", "{B64A1C75-C493-4AC0-8337-1B973FC8BC9C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lan_Scan", "Lan_Scan\Lan_Scan.vcxproj", "{AD326E2D-EE7E-478C-A26E-8B8DE77E4E98}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "task_2_Lan_Scan", "Lan_Scan\Lan_Scan.vcxproj", "{AD326E2D-EE7E-478C-A26E-8B8DE77E4E98}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IP_Monitor", "IP_Monitor\IP_Monitor.vcxproj", "{FD89D791-7543-458D-B7DB-329A5A31A49B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "task_3_IP_Monitor", "IP_Monitor\IP_Monitor.vcxproj", "{FD89D791-7543-458D-B7DB-329A5A31A49B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "task_4_iTracert", "task_4_iTracert\task_4_iTracert.vcxproj", "{898008CA-63FE-46DD-AACF-221B809534CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,14 @@ Global
 		{FD89D791-7543-458D-B7DB-329A5A31A49B}.Release|x64.Build.0 = Release|x64
 		{FD89D791-7543-458D-B7DB-329A5A31A49B}.Release|x86.ActiveCfg = Release|Win32
 		{FD89D791-7543-458D-B7DB-329A5A31A49B}.Release|x86.Build.0 = Release|Win32
+		{898008CA-63FE-46DD-AACF-221B809534CA}.Debug|x64.ActiveCfg = Debug|x64
+		{898008CA-63FE-46DD-AACF-221B809534CA}.Debug|x64.Build.0 = Debug|x64
+		{898008CA-63FE-46DD-AACF-221B809534CA}.Debug|x86.ActiveCfg = Debug|Win32
+		{898008CA-63FE-46DD-AACF-221B809534CA}.Debug|x86.Build.0 = Debug|Win32
+		{898008CA-63FE-46DD-AACF-221B809534CA}.Release|x64.ActiveCfg = Release|x64
+		{898008CA-63FE-46DD-AACF-221B809534CA}.Release|x64.Build.0 = Release|x64
+		{898008CA-63FE-46DD-AACF-221B809534CA}.Release|x86.ActiveCfg = Release|Win32
+		{898008CA-63FE-46DD-AACF-221B809534CA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
