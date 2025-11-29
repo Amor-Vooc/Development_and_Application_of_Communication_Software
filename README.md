@@ -21,6 +21,7 @@ iTracertÊÇÒ»¸ö»ùÓÚICMPÐ­ÒéµÄÍøÂçÂ·¾¶×·×Ù¹¤¾ß£¬ÀàËÆÓÚ´«Í³µÄtracertÃüÁî¡£ËüÍ¨¹ý·¢Ë
 ## task_5_Server&Client
 
 ÕâÊÇÒ»¸ö»ùÓÚTCPÐ­ÒéµÄ¼òµ¥¿Í»§¶Ë-·þÎñÆ÷Ó¦ÓÃ³ÌÐò¡£·þÎñÆ÷¶Ë¼àÌýÖ¸¶¨¶Ë¿Ú£¬µÈ´ý¿Í»§¶ËÁ¬½ÓÇëÇó¡£Ò»µ©Á¬½Ó½¨Á¢£¬¿Í»§¶Ë¿ÉÒÔÏò·þÎñÆ÷·¢ËÍÏûÏ¢£¬·þÎñÆ÷½ÓÊÕµ½ÏûÏ¢ºó½øÐÐ´¦Àí£¬²¢½«½á¹û·µ»Ø¸ø¿Í»§¶Ë¡£·þÎñ¶Ë»áÏÔÊ¾ÀÛ¼Æ TCP Á¬½Ó´ÎÊý£¬ÇÒÃ¿´Î½»»¥·þÎñ¶Ë¾ùÓÐ¶ÔÓ¦ÈÕÖ¾ÏÔÊ¾¡£³ÌÐòÖ§³Ö¶à´ÎÏûÏ¢½»»¥£¬²¢ÔÚÍ¨ÐÅ½áÊøºóÕýÈ·¹Ø±ÕÁ¬½Ó¡£
+
 ¹¦ÄÜÁÐ±í£º
 1. Get current time (TCP) ·þÎñ¶Ë·µ»Ø·þÎñ¶Ëµ±Ç°Ê±¼ä
 2. Echo Mode (UDP) ¿Í»§¶Ë·¢ËÍÏûÏ¢£¬·þÎñ¶Ë·µ»ØÏàÍ¬ÏûÏ¢
