@@ -177,13 +177,13 @@ int main(int argc, char* argv[]) {
         int fromLen = sizeof(fromAddr);
         char recvBuf[1024];
 
-        // 使用 select 模型处理超时（比 setsockopt 更灵活准确）
+        // 使用 select 模型处理超时
         fd_set readfds;
         FD_ZERO(&readfds);
         FD_SET(sockRaw, &readfds);
 
         struct timeval timeVal;
-        timeVal.tv_sec = 3; // 3秒超时
+        timeVal.tv_sec = DEF_TIMEOUT / 1000; // 3秒超时
         timeVal.tv_usec = 0;
 
         int selectResult = select(0, &readfds, NULL, NULL, &timeVal);
