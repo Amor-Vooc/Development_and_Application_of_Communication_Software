@@ -1,0 +1,58 @@
+---
+config:
+  theme: neo
+---
+graph TD
+    Start([程序启动 Main]) --> InitParams[解析命令行参数<br/>端口 & 根目录]
+    InitParams --> NormPath[规范化根目录路径<br/>fs::canonical]
+    NormPath --> InitWinsock[初始化 Winsock<br/>WSAStartup]
+    InitWinsock --> CreateSock[创建 Socket]
+    CreateSock --> BindListen[绑定端口 & 开启监听<br/>bind / listen]
+    
+    BindListen --> AcceptLoop{等待客户端连接<br/>accept}
+    
+    AcceptLoop -- 收到新连接 --> SpawnThread[启动分离线程<br/>handle_client]
+    AcceptLoop -- 持续循环 --> AcceptLoop
+    subgraph ClientThread [客户端处理线程逻辑]
+        direction TB
+        SpawnThread --> Recv[接收数据 recv]
+        Recv --> CheckRecv{接收成功?}
+        CheckRecv -- No/0 --> CloseSock([关闭 Socket 退出])
+        CheckRecv -- Yes --> ParseReq[解析 HTTP 请求行<br/>Method, Path, Body]
+        
+        ParseReq --> PreprocessPath[路径预处理<br/>1. 移除 QueryString<br/>2. URL 解码<br/>3. 转相对路径]
+        
+        PreprocessPath --> SecurityCheck{安全检查:<br/>路径遍历防御}
+        
+        SecurityCheck -- 非法访问 --> Resp403_1[构造 403 Forbidden]
+        
+        SecurityCheck -- 合法路径 --> MethodSwitch{判断 HTTP 方法}
+        MethodSwitch -- GET --> FileCheck{文件系统检查}
+        FileCheck -- 普通文件 --> ReadFile[读取文件内容]
+        ReadFile --> DetectMime[检测 MIME 类型]
+        DetectMime --> Resp200_File[构造 200 OK]
+        
+        FileCheck -- 目录 --> DirCheck{存在 index.html?}
+        DirCheck -- Yes --> ReadFile
+        DirCheck -- No --> Resp403_Dir[构造 403 Forbidden<br/>禁止列目录]
+        
+        FileCheck -- 不存在 --> Resp404[构造 404 Not Found<br/>HTML转义路径]
+        MethodSwitch -- POST --> ExtractBody[提取请求体]
+        ExtractBody --> ParseParams[解析参数 key=val<br/>URL 解码]
+        ParseParams --> ConsoleLog[控制台输出日志<br/>UTF8 转 ANSI]
+        ConsoleLog --> GenHtml[生成 HTML 回显表格]
+        GenHtml --> Resp200_Post[构造 200 OK]
+        MethodSwitch -- Other --> Resp405[构造 405 Method Not Allowed]
+        Resp403_1 --> SendResp[发送响应 send]
+        Resp200_File --> SendResp
+        Resp403_Dir --> SendResp
+        Resp404 --> SendResp
+        Resp200_Post --> SendResp
+        Resp405 --> SendResp
+        
+        SendResp --> CloseSock
+    end
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style AcceptLoop fill:#ff9,stroke:#333,stroke-width:2px
+    style SecurityCheck fill:#ff6666,stroke:#333,stroke-width:2px,color:white
+    style MethodSwitch fill:#bbf,stroke:#333,stroke-width:2px

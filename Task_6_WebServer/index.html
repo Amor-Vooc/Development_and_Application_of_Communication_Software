@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ WebServer 测试页</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            white-space: nowrap; /* 防止按钮文字换行 */
+        }
+
+            .btn:hover {
+                background-color: #219150;
+            }
+
+        /* 输入框容器样式，让输入框和按钮并排 */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* 特定调整让并排输入框自适应宽度 */
+        .input-group input[type="text"] {
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+        .quick-links {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>C++ WebServer 运行成功</h1>
+    <p>如果页面没有乱码，说明服务器的 HTML 解析和 UTF-8 编码处理正常。</p>
+
+    <!-- 测试 1: 自定义 GET 请求 -->
+    <div class="card">
+        <h2>📂 测试 1: GET 请求 (指定文件读取)</h2>
+        <p>输入你想读取的文件名（包含扩展名），点击按钮向服务器发送请求。</p>
+
+        <div class="input-group">
+            <input type="text" id="fileNameInput" placeholder="例如: test.txt, index2.html, data.json" value="test.txt">
+            <button class="btn" onclick="requestFile()">读取文件</button>
+        </div>
+
+        <div class="quick-links">
+            <strong>快速测试链接：</strong>
+            <a href="javascript:void(0)" onclick="setAndGo('test.txt')">test.txt</a> |
+            <a href="javascript:void(0)" onclick="setAndGo('index2.html')">index2.html</a> |
+            <a href="javascript:void(0)" onclick="setAndGo('image.jpg')">image.jpg</a> |
+            <a href="/non_existent_file.html" target="_blank">测试 404 (文件不存在)</a>
+        </div>
+    </div>
+
+    <!-- 测试 2: POST 请求 -->
+    <div class="card">
+        <h2>📝 测试 2: POST 请求 (提交表单)</h2>
+        <p>在下方输入内容并提交，服务器将接收数据并回显（Echo）。</p>
+        <form action="/submit_data" method="POST">
+            <label for="username">姓名 (Name):</label>
+            <input type="text" id="username" name="username" value="张三" placeholder="输入你的名字">
+
+            <label for="message">消息 (Message):</label>
+            <textarea id="message" name="message" rows="3">Hello C++ Server!</textarea>
+
+            <input type="submit" value="发送 POST 请求" class="btn" style="width: 100%; margin-top: 10px;">
+        </form>
+    </div>
+
+    <div style="text-align: center; color: #777; font-size: 0.9em;">
+        Powered by Native C++ Winsock
+    </div>
+
+    <script>
+        // 处理文件请求跳转
+        function requestFile() {
+            var fileName = document.getElementById('fileNameInput').value.trim();
+
+            if (!fileName) {
+                alert("请输入要读取的文件名！");
+                return;
+            }
+
+            // 如果用户没有输入开头的 /，虽然浏览器通常会自动处理，
+            // 但为了清晰，直接用相对路径打开即可
+            // _blank 表示在新标签页打开，方便对比
+            window.open(fileName, '_blank');
+        }
+
+        // 快速链接辅助函数
+        function setAndGo(file) {
+            document.getElementById('fileNameInput').value = file;
+            requestFile();
+        }
+    </script>
+
+</body>
+</html>

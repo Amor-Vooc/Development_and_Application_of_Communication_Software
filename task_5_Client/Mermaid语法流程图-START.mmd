@@ -1,0 +1,10 @@
+---
+config:
+  layout: dagre
+  theme: neo
+---
+flowchart LR
+    Start(["客户端启动"]) --> InitWinsock["初始化 Winsock"]
+    InitWinsock --> ConnectCtrl["连接服务端 TCP （控制通道）"]
+    ConnectCtrl --> SendCTRL["发送 “CTRL” 标识"]
+    SendCTRL --> GetUDPPort["接收服务端返回的 UDP 端口"]

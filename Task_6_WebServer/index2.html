@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CQUPT | 印象重邮</title>
+    <!-- 引入 Tailwind CSS,极大减少了手写 CSS 的工作量 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" href="https://www.cqupt.edu.cn/images/favicon.ico" type="image/x-icon">
+
+    <style>
+        /* --- 样式定义 --- */
+        :root {
+            /* 重邮蓝风格 */
+            --primary-color: #005bac; 
+            --secondary-color: #4facfe; 
+            --bg-dark: #111827;
+            --card-bg: #1f2937;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
+
+        /* 简化的卡片样式 */
+        .simple-card {
+            background: var(--card-bg);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .simple-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 91, 172, 0.2); /* 蓝色阴影 */
+            border-color: var(--secondary-color);
+        }
+
+        /* 导航栏样式 */
+        nav {
+            background: rgba(17, 24, 39, 0.95);
+            border-bottom: 1px solid #374151;
+        }
+
+        /* 时间轴线条 */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: #374151;
+            z-index: 0;
+        }
+        
+        /* 交互按钮样式 */
+        .like-btn:hover {
+            color: #ef4444; 
+            cursor: pointer;
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #005bac;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full z-50 top-0 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3 cursor-pointer">
+            <!-- Logo -->
+            <img src="https://www.cqupt.edu.cn/images/favicon.ico" alt="CQUPT Logo" class="w-8 h-8 rounded-full">
+            <div class="text-xl font-bold tracking-wider text-white">
+                CQUPT <span class="text-blue-400 text-sm font-normal">Online</span>
+            </div>
+        </div>
+        
+        <!-- 桌面端菜单 -->
+        <ul class="hidden md:flex space-x-8 text-sm font-medium text-gray-300">
+            <li><a href="#home" class="hover:text-blue-400 transition-colors">南山之巅</a></li>
+            <li><a href="#exhibits" class="hover:text-blue-400 transition-colors">学科特色</a></li>
+            <li><a href="#timeline" class="hover:text-blue-400 transition-colors">校史沿革</a></li>
+            <li><a href="#capsule" class="hover:text-blue-400 transition-colors">南山树洞</a></li>
+        </ul>
+
+        <!-- 移动端菜单按钮 -->
+        <button class="md:hidden text-white text-xl" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- 移动端全屏菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 bg-gray-900 z-40 transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center space-y-8 text-xl">
+        <a href="#home" onclick="toggleMenu()" class="hover:text-blue-400">南山之巅</a>
+        <a href="#exhibits" onclick="toggleMenu()" class="hover:text-blue-400">学科特色</a>
+        <a href="#timeline" onclick="toggleMenu()" class="hover:text-blue-400">校史沿革</a>
+        <a href="#capsule" onclick="toggleMenu()" class="hover:text-blue-400">南山树洞</a>
+        <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Hero 区域 -->
+    <header id="home" class="relative w-full h-[85vh] flex items-center justify-center bg-[url('https://www.cqupt.edu.cn/images/banner-3.jpg')] bg-cover bg-center">
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-900/70 to-gray-900/90"></div>
+
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <div class="inline-block px-4 py-1 border border-blue-500 rounded-full bg-blue-500/10 text-blue-400 text-sm mb-6 animate-pulse">
+                修德 · 博学 · 求实 · 创新
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
+                重庆邮电大学<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 text-4xl md:text-6xl">志不求易 事不避难</span>
+            </h1>
+            <p class="text-gray-300 mb-10 text-lg md:text-xl max-w-2xl mx-auto font-light">
+                坐落于历史文化名山——重庆南山。中国信息通信人才的摇篮，国家“中西部高校基础能力建设工程”重点建设高校。
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#exhibits" class="px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white transition-all font-bold shadow-lg shadow-blue-600/30">
+                    探索重邮
+                </a>
+                <a href="#capsule" class="px-8 py-3 rounded-full border border-gray-500 hover:bg-white/10 hover:border-white transition-all">
+                    校友留言
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 学科特色/展示区域 -->
+    <section id="exhibits" class="py-24 px-6 bg-gray-900">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4 text-white">重邮印象</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto rounded"></div>
+                <p class="text-gray-400 mt-4">点击爱心，为母校点赞</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 卡片 1 -->
+                <div class="simple-card p-8 relative group">
+                    <div class="w-14 h-14 bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-network-wired text-3xl text-blue-400"></i>
+                    </div>
+                    <div class="text-sm text-blue-400 font-bold mb-2">王牌学科</div>
+                    <h3 class="text-xl font-bold mb-3 text-white">信息通信技术</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        被誉为“中国信息通信人才的摇篮”。在5G/6G网络、物联网、大数据等领域拥有深厚的科研积淀，为国家通信事业输送了大量人才。
+                    </p>
+                    <div class="flex items-center text-gray-500 text-sm border-t border-gray-700 pt-4">
+                        <button class="like-btn flex items-center gap-2 hover:text-red-500 transition-colors">
+                            <i class="fas fa-heart"></i>
+                            <span>点赞 (<span class="like-count">1950</span>)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 卡片 2 -->
+                <div class="simple-card p-8 relative group">
+                    <div class="w-14 h-14 bg-purple-900/30 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-mountain text-3xl text-purple-400"></i>
+                    </div>
+                    <div class="text-sm text-purple-400 font-bold mb-2">校园精神</div>
+                    <h3 class="text-xl font-bold mb-3 text-white">志不求易 事不避难</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        从“太行山路”的攀登，到夺命梯坎的锻炼，重邮学子在南山之巅磨砺意志，传承着独特的“天梯精神”和奋斗基因。
+                    </p>
+                    <div class="flex items-center text-gray-500 text-sm border-t border-gray-700 pt-4">
+                        <button class="like-btn flex items-center gap-2 hover:text-red-500 transition-colors">
+                            <i class="fas fa-heart"></i>
+                            <span>点赞 (<span class="like-count">2023</span>)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 卡片 3 -->
+                <div class="simple-card p-8 relative group">
+                    <div class="w-14 h-14 bg-green-900/30 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-laptop-code text-3xl text-green-400"></i>
+                    </div>
+                    <div class="text-sm text-green-400 font-bold mb-2">科技创新</div>
+                    <h3 class="text-xl font-bold mb-3 text-white">产学研结合</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        从第一套TD-SCDMA标准协议栈到工业互联网芯片，学校始终站在科技前沿，不仅代码写得好，创新创业能力也位居全国前列。
+                    </p>
+                    <div class="flex items-center text-gray-500 text-sm border-t border-gray-700 pt-4">
+                        <button class="like-btn flex items-center gap-2 hover:text-red-500 transition-colors">
+                            <i class="fas fa-heart"></i>
+                            <span>点赞 (<span class="like-count">886</span>)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 历史长河 (Timeline) -->
+    <section id="timeline" class="py-24 px-6 relative bg-[#111827]">
+        <div class="max-w-4xl mx-auto relative timeline-line">
+            <div class="text-center mb-16 relative z-10">
+                <h2 class="text-3xl font-bold mb-4 text-white">发展历程</h2>
+                <p class="text-gray-400">从东川邮政到一流学科建设</p>
+            </div>
+
+            <!-- 节点 1 -->
+            <div class="flex flex-col md:flex-row justify-between items-center w-full mb-12 relative z-10">
+                <div class="order-1 md:w-5/12 text-center md:text-right px-4 p-4 bg-gray-800 rounded-lg border border-gray-700 shadow-lg">
+                    <h3 class="text-lg font-bold text-blue-400">1950年：薪火相传</h3>
+                    <p class="text-gray-400 mt-2 text-sm">东川邮政管理局邮政人员培训班成立，这是重邮的历史起点，红色通信基因由此传承。</p>
+                </div>
+                <div class="order-1 my-4 md:my-0 w-6 h-6 bg-blue-600 rounded-full border-4 border-gray-900 shadow-[0_0_10px_rgba(37,99,235,0.5)]"></div>
+                <div class="order-1 md:w-5/12 px-4"></div>
+            </div>
+
+            <!-- 节点 2 -->
+            <div class="flex flex-col md:flex-row justify-between items-center w-full mb-12 relative z-10">
+                <div class="order-1 md:w-5/12 px-4"></div>
+                <div class="order-1 my-4 md:my-0 w-6 h-6 bg-purple-500 rounded-full border-4 border-gray-900 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
+                <div class="order-1 md:w-5/12 text-center md:text-left px-4 p-4 bg-gray-800 rounded-lg border border-gray-700 shadow-lg">
+                    <h3 class="text-lg font-bold text-purple-400">2006年：更名大学</h3>
+                    <p class="text-gray-400 mt-2 text-sm">学校正式更名为重庆邮电大学（CQUPT），确立了在西南地区乃至全国信息通信领域的地位。</p>
+                </div>
+            </div>
+
+            <!-- 节点 3 -->
+            <div class="flex flex-col md:flex-row justify-between items-center w-full relative z-10">
+                <div class="order-1 md:w-5/12 text-center md:text-right px-4 p-4 bg-gray-800 rounded-lg border border-gray-700 shadow-lg">
+                    <h3 class="text-lg font-bold text-green-400">新时代：双一流建设</h3>
+                    <p class="text-gray-400 mt-2 text-sm">入选重庆市一流学科建设高校，大数据智能化特色鲜明，向着建设特色鲜明的高水平大学迈进。</p>
+                </div>
+                <div class="order-1 my-4 md:my-0 w-6 h-6 bg-green-500 rounded-full border-4 border-gray-900 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                <div class="order-1 md:w-5/12 px-4"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 留言板 (原时间胶囊) -->
+    <section id="capsule" class="py-24 px-6 bg-gray-900">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-12">
+            <!-- 左侧：输入表单 -->
+            <div class="w-full md:w-1/2">
+                <div class="flex items-center gap-3 mb-6">
+                    <i class="fas fa-comment-dots text-3xl text-blue-500"></i>
+                    <h2 class="text-3xl font-bold text-white">南山树洞</h2>
+                </div>
+                <p class="text-gray-400 mb-8 text-sm">
+                    在这里留下你想对重邮说的话，或者是大学四年的感悟。无论是关于信科楼的通宵，还是老校门的火锅。（数据存储在本地浏览器中）
+                </p>
+                
+                <form id="capsuleForm" class="space-y-6 simple-card p-8 border-t-4 border-t-blue-600">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">你的身份/昵称</label>
+                        <input type="text" id="username" required class="w-full bg-gray-800 border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" placeholder="例如：2021级 计科吴彦祖">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">想说的话</label>
+                        <textarea id="message" rows="4" required class="w-full bg-gray-800 border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" placeholder="写下你的重邮记忆..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-3 rounded-lg font-bold transition-all shadow-lg">
+                        发送至树洞 <i class="fas fa-paper-plane ml-2"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- 右侧：留言展示区 -->
+            <div class="w-full md:w-1/2">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-300">最新留言</h3>
+                    <button onclick="clearCapsule()" class="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors">
+                        <i class="fas fa-trash-alt"></i> 清空记录
+                    </button>
+                </div>
+                
+                <div id="messageList" class="space-y-4 max-h-[550px] overflow-y-auto pr-2 custom-scrollbar">
+                    <!-- JS 将在这里动态插入留言 -->
+                    <div class="text-gray-500 text-center py-12 border-2 border-dashed border-gray-700 rounded-xl bg-gray-800/50" id="emptyState">
+                        <i class="fas fa-wind text-4xl mb-3 block opacity-50"></i>
+                        树洞里静悄悄的...<br>快来坐沙发
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-950 py-10 border-t border-gray-800 text-center text-gray-500 text-sm">
+        <div class="mb-4">
+            <a href="https://www.cqupt.edu.cn" target="_blank" class="inline-block w-8 h-8 bg-gray-800 rounded-full leading-8 mx-1 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer"><i class="fas fa-globe"></i></a>
+            <a href="https://github.com/Amor-Vooc" target="_blank" class="inline-block w-8 h-8 bg-gray-800 rounded-full leading-8 mx-1 hover:bg-black hover:text-white transition-colors cursor-pointer"><i class="fab fa-github"></i></a>
+            <a href="https://amor-vooc-github-io.pages.dev/" target="_blank" class="inline-block w-8 h-8 bg-gray-800 rounded-full leading-8 mx-1 hover:bg-red-600 hover:text-white transition-colors cursor-pointer"><i class="fas fa-blog"></i></a>
+        </div>
+        <p class="mb-2">© 2023 CQUPT Web Design | 重庆邮电大学</p>
+        <p>地址：重庆市南岸区南山街道崇文路2号</p>
+    </footer>
+
+    <!-- JavaScript 逻辑 -->
+    <script>
+        // --- 菜单切换 ---
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('translate-x-full');
+        }
+
+        // --- 清空数据 ---
+        function clearCapsule() {
+            if(confirm('确定要清空所有树洞留言吗？')) {
+                localStorage.removeItem('cqupt_treehole_msgs');
+                location.reload();
+            }
+        }
+
+        // 使用 IIFE 立即执行函数,避免变量污染全局作用域
+        (function() {
+            // --- 点赞功能 ---
+            const likeButtons = document.querySelectorAll('.like-btn');
+            likeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const countSpan = this.querySelector('.like-count');
+                    let currentCount = parseInt(countSpan.innerText);
+                    countSpan.innerText = currentCount + 1;
+                    
+                    this.style.color = '#ef4444'; 
+                    this.querySelector('i').classList.add('animate-bounce'); // 增加弹跳动画
+                    setTimeout(() => {
+                         this.querySelector('i').classList.remove('animate-bounce');
+                    }, 1000);
+                });
+            });
+
+            // --- 留言板逻辑 ---
+            const capsuleForm = document.getElementById('capsuleForm');
+            const messageList = document.getElementById('messageList');
+            const emptyState = document.getElementById('emptyState');
+            const STORAGE_KEY = 'cqupt_treehole_msgs';
+            
+            // XSS 防护：将用户输入的特殊字符转义，防止恶意脚本注入
+            function escapeHtml(text) {
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            function loadMessages() {
+                if (!messageList) return;
+                const messages = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                
+                // 清理旧元素
+                Array.from(messageList.children).forEach(child => {
+                    if (child.id !== 'emptyState') {
+                        messageList.removeChild(child);
+                    }
+                });
+                
+                if (messages.length === 0) {
+                    if (emptyState) emptyState.style.display = 'block';
+                    return;
+                } else {
+                    if(emptyState) emptyState.style.display = 'none'; 
+                }
+
+                messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    // 动态生成留言卡片
+                    div.className = 'bg-gray-800 p-4 rounded-lg border border-gray-700 shadow-md hover:border-blue-500/50 transition-colors animate-fade-in';
+                    // 随机分配一个头像背景色
+                    const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-yellow-500'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 ${randomColor} rounded-full flex items-center justify-center text-white text-xs font-bold">
+                                ${msg.username.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-gray-200 text-sm">${escapeHtml(msg.username)}</span>
+                                <span class="text-[10px] text-gray-500">${msg.date}</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm pl-11 leading-relaxed">${escapeHtml(msg.message)}</p>
+                    `;
+                    messageList.appendChild(div);
+                });
+            }
+
+            // 初始化
+            if (capsuleForm) {
+                document.addEventListener('DOMContentLoaded', loadMessages);
+                
+                capsuleForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const username = document.getElementById('username').value;
+                    const message = document.getElementById('message').value;
+                    const date = new Date().toLocaleString('zh-CN', { hour12: false });
+
+                    if (!username || !message) {
+                        alert("请填写完整信息");
+                        return;
+                    }
+
+                    const data = { username, message, date };
+
+                    let messages = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                    messages.unshift(data); 
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+
+                    capsuleForm.reset();
+                    loadMessages();
+                });
+            }
+        })(); 
+    </script>
+</body>
+</html>

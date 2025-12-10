@@ -1,0 +1,76 @@
+---
+config:
+  layout: dagre
+  theme: neo
+---
+flowchart BT
+ subgraph Send_Logic["主线程: 发送"]
+        CheckMsg{"检查消息"}
+        InputMsg["等待用户输入"]
+        SendTCP["send: 发送消息"]
+  end
+ subgraph Recv_Logic["子线程: 接收"]
+        ParseMsg{"解析消息"}
+        WaitRecv["recv: 等待数据"]
+        SetColor["设置控制台颜色"]
+        PrintMsg["打印消息"]
+        ResetColor["重置颜色"]
+        PrintNormal["直接打印"]
+  end
+ subgraph Chat_Session["聊天会话"]
+    direction TB
+        Send_Logic
+        Recv_Logic
+  end
+ subgraph Main_Menu_Loop["主菜单循环"]
+        InputOpt["用户输入选项"]
+        ShowMenu["显示菜单: Time/Echo/Chat/Exit"]
+        ReqTime["发送 “TIME” 指令"]
+        RecvTime["接收并打印服务器时间"]
+        CreateUDP["创建 UDP 套接字"]
+        UDPLoop{"UDP 交互循环"}
+        SendUDP["sendto: 发送消息"]
+        RecvUDP["recvfrom: 接收回显"]
+        PrintEcho["打印回显"]
+        CloseUDP["关闭 UDP 套接字"]
+        StartChat["实例化 ChatClient"]
+        ConnectChat["建立新 TCP 连接"]
+        InputName["输入用户名"]
+        SendName["发送用户名"]
+        CreateRecvThread["创建接收子线程"]
+        Chat_Session
+        DestructChat["析构 ChatClient"]
+        ExitApp(["退出程序"])
+  end
+    ShowMenu --> InputOpt
+    InputOpt -- 1 --> ReqTime
+    ReqTime --> RecvTime
+    RecvTime --> ShowMenu
+    InputOpt -- 2 --> CreateUDP
+    CreateUDP --> UDPLoop
+    UDPLoop -- 输入内容 --> SendUDP
+    SendUDP --> RecvUDP
+    RecvUDP --> PrintEcho
+    PrintEcho --> UDPLoop
+    UDPLoop -- exit --> CloseUDP
+    CloseUDP --> ShowMenu
+    InputOpt -- 3 --> StartChat
+    StartChat --> ConnectChat
+    ConnectChat --> InputName
+    InputName --> SendName
+    SendName --> CreateRecvThread
+    InputMsg --> CheckMsg
+    CheckMsg -- 有效 --> SendTCP
+    SendTCP --> InputMsg
+    CheckMsg -- 空/无效 --> InputMsg
+    WaitRecv --> ParseMsg
+    ParseMsg -- 含颜色代码 --> SetColor
+    SetColor --> PrintMsg
+    PrintMsg --> ResetColor
+    ResetColor --> WaitRecv
+    ParseMsg -- 普通消息 --> PrintNormal
+    PrintNormal --> WaitRecv
+    CreateRecvThread --> InputMsg
+    Send_Logic -- 退出/断开 --> DestructChat
+    DestructChat --> ShowMenu
+    InputOpt -- 4 --> ExitApp

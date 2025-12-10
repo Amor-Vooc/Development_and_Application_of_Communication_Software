@@ -1,0 +1,50 @@
+---
+config:
+  theme: neo
+---
+graph TD
+    Start([服务器启动]) --> InitWinsock[初始化 Winsock]
+    InitWinsock --> CreateSockets[创建 TCP 和 UDP 套接字]
+    CreateSockets --> BindListen[绑定端口并监听 TCP]
+    BindListen --> StartUDPThread[启动 UDP 监听线程]
+    subgraph UDP_Thread [UDP 监听线程]
+        UDPLoop{是否运行?}
+        UDPLoop -- 是 --> UDPRecv[recvfrom: 接收数据]
+        UDPRecv --> UDPCheck{收到数据?}
+        UDPCheck -- 是 --> UDPEcho[sendto: 原样回显数据]
+        UDPEcho --> UDPLoop
+        UDPCheck -- 否 --> UDPSleep[休眠 50ms]
+        UDPSleep --> UDPLoop
+    end
+    
+    StartUDPThread --> MainLoop
+    subgraph Main_TCP_Loop [主线程 TCP 监听]
+        MainLoop{是否运行?}
+        MainLoop -- 是 --> Accept[accept: 等待客户端连接]
+        Accept -- 成功 --> AddCount[访问计数 +1]
+        AddCount --> SpawnThread[创建一个新线程处理连接]
+        SpawnThread --> MainLoop
+    end
+    subgraph Client_Handler_Thread [客户端处理线程]
+        SpawnThread -.-> ThreadStart(线程开始)
+        ThreadStart --> FirstRecv[接收第一条消息]
+        FirstRecv --> CheckType{消息内容?}
+        CheckType -- "CTRL" --> HandleControl[进入 HandleControlClient]
+        HandleControl --> SendUDPInfo[发送 UDP 端口信息]
+        SendUDPInfo --> CtrlLoop{循环接收命令}
+        CtrlLoop -- "TIME" --> SendTime[发送服务器当前时间]
+        SendTime --> CtrlLoop
+        CtrlLoop -- "EXIT" --> CloseCtrl[关闭连接]
+        CtrlLoop -- 断开 --> CloseCtrl
+        CheckType -- "用户名" --> HandleChat[进入 HandleChatClient]
+        HandleChat --> AddToList[加入客户列表 & 记录用户名]
+        AddToList --> BroadcastWelcome[广播欢迎消息]
+        BroadcastWelcome --> ChatLoop{接收消息循环}
+        ChatLoop -- 收到消息 --> LogMsg[控制台打印消息]
+        LogMsg --> BroadcastMsg[广播消息给其他客户端]
+        BroadcastMsg --> ChatLoop
+        ChatLoop -- 断开/出错 --> RemoveList[移出列表 & 清除用户名]
+        RemoveList --> BroadcastLeave[广播离开消息]
+        BroadcastLeave --> CloseChat[关闭连接]
+    end
+    MainLoop -- 否 --> StopServer([停止服务器 & 清理资源])
