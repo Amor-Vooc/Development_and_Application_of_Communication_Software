@@ -1,0 +1,52 @@
+---
+config:
+  theme: neo
+---
+flowchart LR
+ subgraph Retry_Loop["重传尝试循环 - MAX_RETRIES"]
+        DropFrame["丢弃该帧"]
+        CheckRetry{"retries &lt;= 3?"}
+        Sense["载波监听: 检查信道是否 IDLE"]
+        WaitBusy["等待并监听"]
+        WaitDIFS["等待 DIFS 间隔"]
+        DoubleCheck{"DIFS期间信道是否变忙?"}
+        Backoff1["随机退避"]
+        SendData["发送数据帧: Channel = BUSY_A"]
+        WaitACK["等待 ACK 响应 - 200ms超时"]
+        Success["发送成功: Success_count++"]
+        Fail["重置信道: Channel = IDLE"]
+        Backoff2["指数退避: random_backoff"]
+        IncRetry["retries++"]
+  end
+ subgraph Frame_Loop["帧发送循环 - TOTAL_FRAMES"]
+        End(["结束模拟"])
+        NextFrame{"frame_count &lt;= 10?"}
+        InitRetry["初始化: retries = 0"]
+        Retry_Loop
+        NextFrameStep["frame_count++"]
+  end
+ subgraph Other_Threads["并行运行的其他逻辑"]
+        HostB["Host B: 监听到 BUSY_A 后且无冲突则发送 BUSY_B"]
+        Interference["干扰源: 随机修改信道为 COLLISION/NOISE"]
+  end
+    Start(["开始模拟"]) --> InitFrame["初始化: frame_count = 1"]
+    NextFrame -- 否 --> End
+    NextFrame -- 是 --> InitRetry
+    CheckRetry -- 否 --> DropFrame
+    CheckRetry -- 是 --> Sense
+    Sense -- 忙 --> WaitBusy
+    WaitBusy --> Sense
+    Sense -- 空闲 --> WaitDIFS
+    WaitDIFS --> DoubleCheck
+    DoubleCheck -- 是 --> Backoff1
+    Backoff1 --> Sense
+    DoubleCheck -- 否 --> SendData
+    SendData --> WaitACK
+    WaitACK -- 收到 BUSY_B --> Success
+    WaitACK -- 超时/冲突 --> Fail
+    Fail --> Backoff2
+    Backoff2 --> IncRetry
+    IncRetry --> CheckRetry
+    Success --> NextFrameStep
+    DropFrame --> NextFrameStep
+    NextFrameStep --> NextFrame
