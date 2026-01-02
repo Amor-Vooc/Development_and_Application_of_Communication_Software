@@ -1,6 +1,6 @@
 # CQUPT 重庆邮电大学 A2012230 通信软件开发与应用
 ## Visual Studio 2022 环境下正常运行
-## 课程进行中
+## 课程已完结
 
 ## task_1_Ethernet_Analyzer
 
